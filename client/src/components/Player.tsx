@@ -603,7 +603,15 @@ export default function Player({
                                     </button>
                                     <button
                                         className="track-menu-item"
-                                        onClick={() => { setShowVideo(!showVideo); setShowMoreMenu(false); }}
+                                        onClick={() => {
+                                            if (!showVideo && audioRef.current) {
+                                                // Pause audio when showing video
+                                                audioRef.current.pause();
+                                                setIsPlaying(false);
+                                            }
+                                            setShowVideo(!showVideo);
+                                            setShowMoreMenu(false);
+                                        }}
                                     >
                                         <VideoIcon />
                                         {showVideo ? 'Hide Video' : 'Show Video'}
