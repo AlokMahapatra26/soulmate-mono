@@ -5,7 +5,7 @@ import { Track, getStreamUrl, getDownloadUrl, getVideoDetails, VideoDetails } fr
 import { useMusic } from '@/contexts/MusicContext';
 import { likesAPI, playlistsAPI, historyAPI } from '@/lib/apiClient';
 import {
-    Play, Pause, SkipBack, SkipForward, RotateCcw, RotateCw
+    Play, Pause, SkipBack, SkipForward, RotateCcw, RotateCw, MoreHorizontal
 } from 'lucide-react';
 
 // Icons defined outside component to prevent hydration mismatch
@@ -95,6 +95,14 @@ const SpeedIcon = () => (
     </svg>
 );
 
+const PitchIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M9 18V5l12-2v13" />
+        <circle cx="6" cy="18" r="3" />
+        <circle cx="18" cy="16" r="3" />
+    </svg>
+);
+
 const InfoIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10" />
@@ -141,6 +149,8 @@ export default function Player({
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
     const [loadingDetails, setLoadingDetails] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
+    const [pitch, setPitch] = useState(0); // Semitones: -6 to +6
 
 
 
@@ -341,7 +351,30 @@ export default function Player({
         const nextSpeed = speeds[(currentIndex + 1) % speeds.length];
         setPlaybackSpeed(nextSpeed);
         if (audioRef.current) {
-            audioRef.current.playbackRate = nextSpeed;
+            // Keep pitch constant when changing speed
+            (audioRef.current as any).preservesPitch = true;
+            // Apply speed with current pitch offset
+            const pitchRate = Math.pow(2, pitch / 12);
+            audioRef.current.playbackRate = nextSpeed * (pitch !== 0 ? pitchRate : 1);
+        }
+    };
+
+    const cyclePitch = () => {
+        const pitches = [-6, -4, -2, 0, 2, 4, 6];
+        const currentIndex = pitches.indexOf(pitch);
+        const nextPitch = pitches[(currentIndex + 1) % pitches.length];
+        setPitch(nextPitch);
+        if (audioRef.current) {
+            if (nextPitch === 0) {
+                // Reset to normal: preserve pitch with current speed
+                (audioRef.current as any).preservesPitch = true;
+                audioRef.current.playbackRate = playbackSpeed;
+            } else {
+                // Apply pitch shift (this will also affect tempo slightly)
+                (audioRef.current as any).preservesPitch = false;
+                const pitchRate = Math.pow(2, nextPitch / 12);
+                audioRef.current.playbackRate = playbackSpeed * pitchRate;
+            }
         }
     };
 
@@ -520,14 +553,6 @@ export default function Player({
             <div className="player-right">
                 <div className="player-extras">
                     <button
-                        className="extra-button"
-                        onClick={handleDownload}
-                        title="Download"
-                        disabled={!track}
-                    >
-                        <DownloadIcon />
-                    </button>
-                    <button
                         className={`extra-button ${isLiked ? 'active liked' : ''}`}
                         onClick={handleLike}
                         title={isLiked ? 'Unlike' : 'Like'}
@@ -551,33 +576,63 @@ export default function Player({
                     >
                         <LoopIcon active={isLooping} />
                     </button>
-                    <button
-                        className="extra-button speed-button"
-                        onClick={cycleSpeed}
-                        title={`Playback Speed: ${playbackSpeed}x`}
-                        disabled={!track}
-                    >
-                        <SpeedIcon />
-                        {playbackSpeed !== 1 && (
-                            <span className="speed-indicator">{playbackSpeed}x</span>
+
+                    {/* More Options Menu */}
+                    <div className="track-menu-container">
+                        <button
+                            className="track-menu-button"
+                            onClick={() => setShowMoreMenu(!showMoreMenu)}
+                            disabled={!track}
+                        >
+                            ⋮
+                        </button>
+
+                        {showMoreMenu && (
+                            <>
+                                <div
+                                    className="track-menu-backdrop"
+                                    onClick={() => setShowMoreMenu(false)}
+                                />
+                                <div className="track-menu" style={{ bottom: '100%', top: 'auto', marginBottom: '8px' }}>
+                                    <button
+                                        className="track-menu-item"
+                                        onClick={() => { handleDownload(); setShowMoreMenu(false); }}
+                                    >
+                                        <DownloadIcon />
+                                        Download MP3
+                                    </button>
+                                    <button
+                                        className="track-menu-item"
+                                        onClick={() => { setShowVideo(!showVideo); setShowMoreMenu(false); }}
+                                    >
+                                        <VideoIcon />
+                                        {showVideo ? 'Hide Video' : 'Show Video'}
+                                    </button>
+                                    <button
+                                        className="track-menu-item"
+                                        onClick={cycleSpeed}
+                                    >
+                                        <SpeedIcon />
+                                        Speed: {playbackSpeed}x
+                                    </button>
+                                    <button
+                                        className="track-menu-item"
+                                        onClick={cyclePitch}
+                                    >
+                                        <PitchIcon />
+                                        Pitch: {pitch >= 0 ? '+' : ''}{pitch} st
+                                    </button>
+                                    <button
+                                        className="track-menu-item"
+                                        onClick={() => { handleShowInfo(); setShowMoreMenu(false); }}
+                                    >
+                                        <InfoIcon />
+                                        Track Info
+                                    </button>
+                                </div>
+                            </>
                         )}
-                    </button>
-                    <button
-                        className={`extra-button ${showVideo ? 'active' : ''}`}
-                        onClick={() => setShowVideo(!showVideo)}
-                        title={showVideo ? 'Hide Video' : 'Show Video'}
-                        disabled={!track}
-                    >
-                        <VideoIcon />
-                    </button>
-                    <button
-                        className="extra-button"
-                        onClick={handleShowInfo}
-                        title="Track Info"
-                        disabled={!track}
-                    >
-                        <InfoIcon />
-                    </button>
+                    </div>
                 </div>
 
                 <div className="player-volume">

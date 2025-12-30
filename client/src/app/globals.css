@@ -673,6 +673,7 @@ textarea:focus {
 .track-menu-button:hover {
   background: var(--red-dim);
   color: var(--red);
+  animation: wiggle 0.35s ease;
 }
 
 .track-menu-backdrop {
@@ -715,6 +716,10 @@ textarea:focus {
 .track-menu-item:hover {
   background: var(--red-dim);
   color: var(--red);
+}
+
+.track-menu-item:hover svg {
+  animation: wiggle 0.35s ease;
 }
 
 .track-menu-item svg {
@@ -1914,4 +1919,73 @@ textarea:focus {
   .quick-cards {
     grid-template-columns: 1fr;
   }
+}
+
+/* Player More Menu */
+.player-more-menu-container {
+  position: relative;
+}
+
+.player-more-menu {
+  position: absolute;
+  bottom: 100%;
+  /* Open upwards */
+  right: -10px;
+  /* Align with button */
+  margin-bottom: 16px;
+  background: var(--black-90);
+  border: 1px solid var(--white-10);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  min-width: 200px;
+  z-index: 1000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: slide-up-fade 0.2s ease-out;
+}
+
+.player-more-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.player-more-menu-item:hover {
+  background: var(--white-10);
+}
+
+.player-more-menu-item.active {
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+.player-more-menu-item svg {
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+}
+
+.player-more-menu-item:hover svg {
+  opacity: 1;
+}
+
+.player-more-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: transparent;
 }
