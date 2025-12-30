@@ -509,6 +509,9 @@ textarea:focus {
 }
 
 .search-button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
   background: var(--red);
   border: none;
