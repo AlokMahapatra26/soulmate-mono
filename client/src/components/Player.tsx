@@ -159,6 +159,7 @@ export default function Player({
     const loadTrack = useCallback(async () => {
         if (!track || !audioRef.current) return;
 
+        const currentTrackId = track.id;
         setIsLoading(true);
         setIsPlaying(false);
         setCurrentTime(0);
@@ -166,16 +167,29 @@ export default function Player({
 
         try {
             const streamInfo = await getStreamUrl(track.id);
+
+            // If track changed while fetching, don't play
+            if (track.id !== currentTrackId) return;
+
             if (streamInfo && audioRef.current) {
                 audioRef.current.src = streamInfo.url;
                 audioRef.current.load();
-                await audioRef.current.play();
-                setIsPlaying(true);
+                try {
+                    await audioRef.current.play();
+                    setIsPlaying(true);
+                } catch (playError: any) {
+                    // Ignore AbortError which happens when skipping tracks quickly
+                    if (playError.name !== 'AbortError') {
+                        throw playError;
+                    }
+                }
             }
         } catch (error) {
             console.error('Failed to load track:', error);
         } finally {
-            setIsLoading(false);
+            if (track.id === currentTrackId) {
+                setIsLoading(false);
+            }
         }
     }, [track]);
 
