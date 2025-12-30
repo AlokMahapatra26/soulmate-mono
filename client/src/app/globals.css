@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @import './auth-styles.css';
 @import './pages-styles.css';
 @import './fixed-nav-styles.css';
@@ -157,7 +158,7 @@ html,
 body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden;  <-- Removed to allow scrolling on landing page */
 }
 
 body {
