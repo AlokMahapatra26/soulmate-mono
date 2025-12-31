@@ -8,6 +8,7 @@ import Player from '@/components/Player';
 import NowPlaying from '@/components/NowPlaying';
 import Lyrics from '@/components/Lyrics';
 import VideoPlayer from '@/components/VideoPlayer';
+import MoodLight from '@/components/MoodLight';
 
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Home, ListMusic, Heart, History, Code, User, Infinity, Settings } from 'lucide-react';
@@ -28,6 +29,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="app-wrapper">
+            <MoodLight />
             {/* Fixed Navbar */}
             <nav className="navbar fixed-navbar">
                 <Link href="/app" className="navbar-logo">

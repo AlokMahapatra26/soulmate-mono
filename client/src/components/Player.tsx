@@ -111,6 +111,13 @@ const InfoIcon = () => (
     </svg>
 );
 
+const MoodIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z" />
+        <path d="M9 21h6" />
+    </svg>
+);
+
 
 interface PlayerProps {
     track: Track | null;
@@ -129,7 +136,7 @@ export default function Player({
     onAudioReady,
     onPlayingStateChange,
 }: PlayerProps) {
-    const { showVideo, setShowVideo } = useMusic();
+    const { showVideo, setShowVideo, showMoodLight, setShowMoodLight } = useMusic();
     const audioRef = useRef<HTMLAudioElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -575,6 +582,14 @@ export default function Player({
                         disabled={!track}
                     >
                         <LoopIcon active={isLooping} />
+                    </button>
+
+                    <button
+                        className={`extra-button ${showMoodLight ? 'active' : ''}`}
+                        onClick={() => setShowMoodLight(!showMoodLight)}
+                        title="Mood Light"
+                    >
+                        <MoodIcon />
                     </button>
 
                     {/* More Options Menu */}

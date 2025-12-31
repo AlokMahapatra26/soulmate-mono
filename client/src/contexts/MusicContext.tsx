@@ -11,6 +11,7 @@ interface MusicContextType {
     audioElement: HTMLAudioElement | null;
     showVideo: boolean;
     showExpandedLyrics: boolean;
+    showMoodLight: boolean;
     setCurrentTrack: (track: Track | null) => void;
     setQueue: (queue: Track[]) => void;
     setIsPlaying: (playing: boolean) => void;
@@ -18,6 +19,7 @@ interface MusicContextType {
     setAudioElement: (element: HTMLAudioElement | null) => void;
     setShowVideo: (show: boolean) => void;
     setShowExpandedLyrics: (show: boolean) => void;
+    setShowMoodLight: (show: boolean) => void;
     addToQueue: (track: Track) => void;
     removeFromQueue: (trackId: string) => void;
     playNext: () => void;
@@ -35,6 +37,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
     const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
     const [showVideo, setShowVideo] = useState(false);
     const [showExpandedLyrics, setShowExpandedLyrics] = useState(false);
+    const [showMoodLight, setShowMoodLight] = useState(false);
 
     const addToQueue = (track: Track) => {
         const isInQueue = queue.some(t => t.id === track.id);
@@ -85,6 +88,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
                 audioElement,
                 showVideo,
                 showExpandedLyrics,
+                showMoodLight,
                 setCurrentTrack,
                 setQueue,
                 setIsPlaying,
@@ -92,6 +96,7 @@ export function MusicProvider({ children }: { children: ReactNode }) {
                 setAudioElement,
                 setShowVideo,
                 setShowExpandedLyrics,
+                setShowMoodLight,
                 addToQueue,
                 removeFromQueue,
                 playNext,
