@@ -29,6 +29,12 @@ Before you begin, ensure you have the following installed on your system:
             ```
         *   Alternatively, see the [official installation guide](https://github.com/yt-dlp/yt-dlp#installation) for binary downloads.
 
+        * **Set Path**
+            *   **Windows**: Add the path to the `yt-dlp` executable to your system's PATH environment variable.
+            *   **macOS/Linux**: Add the path to the `yt-dlp` executable to your system's PATH environment variable.
+
+        (just make yt-dlp accessible from command)    
+
 
 ## Installation
 
