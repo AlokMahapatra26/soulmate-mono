@@ -10,8 +10,8 @@ import Lyrics from '@/components/Lyrics';
 import VideoPlayer from '@/components/VideoPlayer';
 import MoodLight from '@/components/MoodLight';
 
-import { useTheme } from 'next-themes';
-import { Sun, Moon, Home, ListMusic, Heart, History, Code, User, Infinity, Settings } from 'lucide-react';
+
+import { Home, ListMusic, Heart, History, Code, User, Infinity, Settings } from 'lucide-react';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -19,7 +19,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [mounted, setMounted] = useState(false);
     const music = useMusic();
-    const { theme, setTheme } = useTheme();
+
 
     useEffect(() => {
         setMounted(true);
@@ -74,14 +74,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                         <span>Developer</span>
                     </Link>
 
-                    <button
-                        className="navbar-link"
-                        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                        title="Toggle Theme"
-                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                    >
-                        {mounted ? (theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />) : <Sun size={20} />}
-                    </button>
+
 
                     <div className="user-menu-container">
                         <button
